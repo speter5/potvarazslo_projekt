@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+html, body {
+    background-color:#42495a;; /* Tailwind `blue-200` színe */
+    min-height: 100vh;
+  }
