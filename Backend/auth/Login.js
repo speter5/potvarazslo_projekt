@@ -20,7 +20,7 @@ passport.use(
       passwordField: "password",
     },
     async (email, password, done) => {
-      console.log(email,password)
+
       const user = await Felhasznalo.findOne({
         where: {
           email: email,

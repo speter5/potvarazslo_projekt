@@ -12,7 +12,7 @@ router.use((req, res, next) => {
         email: req.user?.email,
       },
     }).then((user) => {
-      if (user?.jog > 5) {
+      if (user?.jog >= 5) {
         next();
       } else {
         res.status(403).send({ status: "Forbidden" });

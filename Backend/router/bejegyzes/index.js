@@ -50,11 +50,9 @@ router.get("/", async (req, res) => {
 
   if (bejegyzesek.length < 1) return res.status(404).send([]);
 
-
   const kimenet = bejegyzesek.map((bejegyzes) => {
-
-    const test = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/img;
-
+    const test =
+      /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gim;
 
     return {
       cim: bejegyzes.cim,
@@ -65,8 +63,8 @@ router.get("/", async (req, res) => {
       bejegyzesID: bejegyzes.bejegyzesID,
       jovahagyva: bejegyzes.jovahagyva,
       video: bejegyzes.Links?.map((l) => {
-        return test?.test(l.link)
-      }).some(i => i== true)
+        return test?.test(l.link);
+      }).some((i) => i == true),
     };
   });
 
@@ -84,11 +82,9 @@ router.get("/osszes", adminMiddleware, async (req, res) => {
 
   if (bejegyzesek.length < 1) return res.status(404).send([]);
 
-
   const kimenet = bejegyzesek.map((bejegyzes) => {
-
-    const test = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/img;
-
+    const test =
+      /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gim;
 
     return {
       cim: bejegyzes.cim,
@@ -99,8 +95,8 @@ router.get("/osszes", adminMiddleware, async (req, res) => {
       bejegyzesID: bejegyzes.bejegyzesID,
       jovahagyva: bejegyzes.jovahagyva,
       video: bejegyzes.Links?.map((l) => {
-        return test?.test(l.link)
-      }).some(i => i== true)
+        return test?.test(l.link);
+      }).some((i) => i == true),
     };
   });
 
@@ -133,8 +129,8 @@ router.get("/kereses", async (req, res) => {
         },
       ],
     },
-    limit: limit ? parseInt(limit) : 25,    include: [{ model: Link, attributes: ["link"] }],
-
+    limit: limit ? parseInt(limit) : 25,
+    include: [{ model: Link, attributes: ["link"] }],
   });
 
   const kimenet = bejegyzesek.map((bejegyzes) => {
@@ -145,7 +141,7 @@ router.get("/kereses", async (req, res) => {
       slug: bejegyzes.slug,
       linkek: bejegyzes.Links?.map((l) => l.link),
       bejegyzesID: bejegyzes.bejegyzesID,
-      jovahagyva: bejegyzes.jovahagyva
+      jovahagyva: bejegyzes.jovahagyva,
     };
   });
 
@@ -171,7 +167,6 @@ router.get("/:id", async (req, res) => {
 
   if (!bejegyzes) return res.status(404).send({ error: "Poszt nem található" });
 
-
   const kimenet = {
     bejegyzesID: bejegyzes.bejegyzesID,
     cim: bejegyzes.cim,
@@ -190,7 +185,6 @@ router.get("/:id", async (req, res) => {
   res.status(200).send(kimenet);
 });
 
-
 router.get("/slug/:slug", async (req, res) => {
   const { slug } = req.params;
 
@@ -206,12 +200,11 @@ router.get("/slug/:slug", async (req, res) => {
         attributes: ["marka"],
       },
       { model: Link, attributes: ["link"] },
-      { model: Felhasznalo},
+      { model: Felhasznalo },
     ],
   });
 
   if (!bejegyzes) return res.status(404).send({ error: "Poszt nem található" });
-
 
   const kimenet = {
     bejegyzesID: bejegyzes.bejegyzesID,
@@ -227,8 +220,51 @@ router.get("/slug/:slug", async (req, res) => {
     felhasznalo: {
       nev: bejegyzes?.Felhasznalo?.nev,
       email: bejegyzes?.Felhasznalo?.email,
-      felhasznaloID: bejegyzes?.Felhasznalo?.felhasznaloID
-    }
+      felhasznaloID: bejegyzes?.Felhasznalo?.felhasznaloID,
+    },
+  };
+
+  if (!bejegyzes) return res.status(404).send({ error: "Poszt nem található" });
+
+  res.status(200).send(kimenet);
+});
+
+router.get("/admin/:slug", adminMiddleware, async (req, res) => {
+  const { slug } = req.params;
+
+  const bejegyzes = await Bejegyzes.findOne({
+    where: {
+      slug: slug,
+    },
+
+    include: [
+      {
+        model: Marka,
+        attributes: ["marka"],
+      },
+      { model: Link, attributes: ["link"] },
+      { model: Felhasznalo },
+    ],
+  });
+
+  if (!bejegyzes) return res.status(404).send({ error: "Poszt nem található" });
+
+  const kimenet = {
+    bejegyzesID: bejegyzes.bejegyzesID,
+    cim: bejegyzes.cim,
+    tartalom: bejegyzes.tartalom,
+    autoTipus: bejegyzes.autoTipus,
+    datum: bejegyzes.datum,
+    felhasznaloID: bejegyzes.felhasznaloID,
+    marka: bejegyzes.Marka?.marka,
+    jovahagyva: bejegyzes.jovahagyva,
+    linkek: bejegyzes.Links?.map((l) => l.link),
+    slug: bejegyzes.slug,
+    felhasznalo: {
+      nev: bejegyzes?.Felhasznalo?.nev,
+      email: bejegyzes?.Felhasznalo?.email,
+      felhasznaloID: bejegyzes?.Felhasznalo?.felhasznaloID,
+    },
   };
 
   if (!bejegyzes) return res.status(404).send({ error: "Poszt nem található" });
