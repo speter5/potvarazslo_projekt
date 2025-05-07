@@ -24,13 +24,13 @@ cd potvarazslo_projekt
 Telepítsd a szükséges szoftverek aztán indítsd el a szervereket:
 
 ```bash
-cd backend
+cd Backend
 npm install
 node index.js
 ```
 
 ```bash
-cd frontend
+cd Frontend
 npm install
 npm run build
 npm run start
