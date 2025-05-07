@@ -4,7 +4,6 @@ import { PhoneCall, SealCheck } from "@phosphor-icons/react";
 const { getAvatar } = require("@/components/avatar");
 
 export default function Felhasznalo({ felhasznalo, hiba }) {
-  console.log(hiba);
   if (hiba !== 200)
     return (
       <div className="min-h-screen bg-gray-700 flex flex-col items-center">
@@ -24,7 +23,7 @@ export default function Felhasznalo({ felhasznalo, hiba }) {
       <title suppressHydrationWarning>
         {"PótVarázsló / " + felhasznalo?.nev}
       </title>
-      <Navbar felhasznalo={felhasznalo}/>
+      <Navbar felhasznalo={felhasznalo} />
       <div className="w-10/12 flex flex-col items-center gap-5">
         <img
           src={getAvatar(felhasznalo?.email)}
@@ -60,12 +59,11 @@ export default function Felhasznalo({ felhasznalo, hiba }) {
           </div>
         )}
 
-          <div className="w-full flex flex-col items-center gap-10">
-            {felhasznalo?.bejegyzesek?.map((b) => {
-              return <Post post={b} />;
-            })}
-          </div>
-  
+        <div className="w-full flex flex-col items-center gap-10">
+          {felhasznalo?.bejegyzesek?.map((b) => {
+            return <Post post={b} />;
+          })}
+        </div>
       </div>
     </div>
   );

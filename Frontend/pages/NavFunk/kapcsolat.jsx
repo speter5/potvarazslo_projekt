@@ -4,36 +4,11 @@ import { YoutubeLogo } from "@phosphor-icons/react";
 import Navbar from "@/components/Navbar";
 import Post from "@/components/Post";
 
-export default function Bejelentkezés({ bejegyzes }) {
-  const Login = (email, password) => {
-    fetch(`https://127.0.0.1:8080/api/auth/login`, {
-      method: "POST",
-      redirect: "follow",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    }).then((res) => {
-      switch (res.status) {
-        case 200:
-          alert("bejelnetkezve");
-          break;
-
-        default:
-          alert("hiba");
-          break;
-      }
-    });
-  };
-
+export default function Kapcsolat({ felhasznalo }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-600 text-white flex flex-col items-center">
       <title>PótVarázsló | Kapcsolat</title>
-      <Navbar />
+      <Navbar felhasznalo={felhasznalo} />
 
       <h1 className="text-5xl font-extrabold mt-16 mb-20 text-center tracking-wide animate-fade-in">
         Elérhetőségeink
@@ -57,14 +32,19 @@ export default function Bejelentkezés({ bejegyzes }) {
     </div>
   );
 }
-export const getServerSideProps = async () => {
-  const res = await fetch("http://127.0.0.1:8080/api/bejegyzes");
+export const getServerSideProps = async (ctx) => {
+  const felhasznalo = await fetch("http://127.0.0.1:8080/api/felhasznalo", {
+    headers: {
+      cookie: ctx.req.headers?.cookie,
+    },
+  });
 
-  const data = await res.json();
+  const felhasznaloAdat = await felhasznalo.json();
 
   return {
     props: {
-      bejegyzes: data,
+      felhasznalo: felhasznaloAdat,
+      hiba: felhasznalo?.status,
     },
   };
 };

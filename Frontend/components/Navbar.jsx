@@ -37,12 +37,11 @@ function Navbar({ felhasznalo }) {
         PótVarázsló
       </Link>
       <div className="space-x-4 flex items-center">
-      {felhasznalo?.jog >= 5 &&
-        <Link  href="/bejegyzesek/uj">
-          <Plus size={32} weight="bold" className="text-white" />
-        </Link>
-        }
-
+        {felhasznalo?.jog >= 5 && (
+          <Link href="/bejegyzesek/uj">
+            <Plus size={32} weight="bold" className="text-white" />
+          </Link>
+        )}
         {felhasznalo?.nev ? (
           <Link href="/NavFunk/fiok" className="hover:text-gray-300">
             <img
@@ -54,7 +53,8 @@ function Navbar({ felhasznalo }) {
           <Link href="/NavFunk/bejelentkezes" className="hover:text-gray-300 ">
             Bejelentkezés
           </Link>
-        )}
+        )}{" "}
+        {felhasznalo?.jog >= 10 && <Link href="/admin">Admin</Link>}
         <Link href="/NavFunk/kapcsolat" className="hover:text-gray-300">
           Kapcsolat
         </Link>

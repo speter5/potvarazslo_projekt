@@ -6,7 +6,7 @@ import Post from "@/components/Post";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 
-export default function Bejelentkezés({ bejegyzes }) {
+export default function Bejelentkezes({ bejegyzes }) {
   const router = useRouter();
 
   const [regMode, setRegMode] = useState(false);
@@ -15,7 +15,6 @@ export default function Bejelentkezés({ bejegyzes }) {
   const [jelszo, setJelszo] = useState("");
   const [telefonszam, setTelefonszam] = useState("");
   const [felhasznaloNev, setFelhasznalonev] = useState("");
-
 
   const Login = (email, jelszo) => {
     fetch(
@@ -43,7 +42,7 @@ export default function Bejelentkezés({ bejegyzes }) {
   };
 
   const Register = (email, jelszo, felhasznaloNev, telefonszam) => {
-    fetch(`https://127.0.0.1:8080/api/auth/signup`, {
+    fetch(`http://127.0.0.1:8080/api/auth/signup`, {
       method: "POST",
       redirect: "follow",
       credentials: "include",
@@ -57,13 +56,15 @@ export default function Bejelentkezés({ bejegyzes }) {
         telefonszam: telefonszam,
       }),
     }).then((res) => {
+      console.log(res?.status);
       switch (res.status) {
         case 200:
-          alert("bejelnetkezve");
+          toast.success("Sikeres regisztráció!");
+          router.replace("/");
           break;
 
         default:
-          alert("hiba");
+          toast.error("Hiba!");
           break;
       }
     });
@@ -110,35 +111,37 @@ export default function Bejelentkezés({ bejegyzes }) {
             onChange={(e) => setTelefonszam(e.target.value)}
           />
         )}
-         {regMode && <div class="flex">
-          <div class="flex items-center h-5">
-            <input
-              id="helper-checkbox"
-              aria-describedby="helper-checkbox-text"
-              type="checkbox"
-              value={mechMode}
-              onChange={(event) => {
-                setMechMode(!mechMode);
-              }}
-              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            />
+        {regMode && (
+          <div class="flex">
+            <div class="flex items-center h-5">
+              <input
+                id="helper-checkbox"
+                aria-describedby="helper-checkbox-text"
+                type="checkbox"
+                value={mechMode}
+                onChange={(event) => {
+                  setMechMode(!mechMode);
+                }}
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+            </div>
+            <div class="ms-2 text-sm">
+              <label
+                for="helper-checkbox"
+                class="font-medium text-gray-900 dark:text-gray-300"
+              >
+                Szerelő vagyok
+              </label>
+              <p
+                id="helper-checkbox-text"
+                class="text-xs font-normal text-gray-500 dark:text-gray-300"
+              >
+                Csak akkor pipáld be a mezőt ha szerelő vagy és jelentkezni
+                szeretnél
+              </p>
+            </div>
           </div>
-          <div class="ms-2 text-sm">
-            <label
-              for="helper-checkbox"
-              class="font-medium text-gray-900 dark:text-gray-300"
-            >
-              Szerelő vagyok
-            </label>
-            <p
-              id="helper-checkbox-text"
-              class="text-xs font-normal text-gray-500 dark:text-gray-300"
-            >
-              Csak akkor pipáld be a mezőt ha szerelő vagy és jelentkezni
-              szeretnél
-            </p>
-          </div>
-        </div>}
+        )}
         <button
           onClick={() => {
             if (regMode == false) {
@@ -153,7 +156,7 @@ export default function Bejelentkezés({ bejegyzes }) {
         <button
           onClick={() => {
             if (regMode == true) {
-              Register(email,jelszo,felhasznaloNev,telefonszam)
+              Register(email, jelszo, felhasznaloNev, telefonszam);
             }
             setRegMode(true);
           }}

@@ -16,6 +16,7 @@ export default function UjBejegyzes({ felhasznalo, hiba }) {
   const [cim, setCim] = useState("");
   const [autoTipus, setAutoTipus] = useState("");
   const [linkek, setLinkek] = useState([]);
+  const [link, setLink] = useState("");
 
   const poszt = () => {
     const raw = JSON.stringify({
@@ -61,6 +62,8 @@ export default function UjBejegyzes({ felhasznalo, hiba }) {
 
   return (
     <div className="min-h-screen bg-gray-700 flex flex-col items-center">
+      <title suppressHydrationWarning>PótVarázsló / Új poszt</title>
+
       <Navbar felhasznalo={felhasznalo} />
 
       <div className="w-full px-4 sm:px-8 mt-10 flex justify-center">
@@ -95,22 +98,34 @@ export default function UjBejegyzes({ felhasznalo, hiba }) {
             <p className="text-white text-sm">
               A linkek hozzáadásához nyomja meg az "Enter"-t
             </p>
+
             <input
               required
               id="linkek"
               placeholder="Link hozzáadása"
               type="url"
+              value={link}
               className="bg-white px-4 py-2 rounded-lg w-full text-black focus:outline-none focus:ring-2 focus:ring-gray-300"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  const value = e.currentTarget.value;
-                  if (value?.length > 0 && !linkek.includes(value)) {
-                    setLinkek([...linkek, value]);
-                    e.currentTarget.value = "";
+                  const value = link;
+
+                  if (URL.canParse(link)) {
+                    if (!linkek.includes(value)) {
+                      setLinkek([...linkek, link]);
+                    } else {
+                      setLink("");
+                    }
+                  } else {
+                    toast.error("Hibás link!");
                   }
                 }
               }}
+              onChange={(e) => {
+                setLink(e.currentTarget.value);
+              }}
             />
+
             <div className="flex flex-col gap-1">
               {linkek.map((item, index) => (
                 <a
@@ -124,6 +139,25 @@ export default function UjBejegyzes({ felhasznalo, hiba }) {
                 </a>
               ))}
             </div>
+
+            <button
+              onClick={() => {
+                const value = link;
+
+                if (URL.canParse(link)) {
+                  if (!linkek.includes(value)) {
+                    setLinkek([...linkek, link]);
+                  } else {
+                    setLink("");
+                  }
+                } else {
+                  toast.error("Hibás link!");
+                }
+              }}
+              className="px-6 py-3 rounded-xl bg-blue-600 transition text-white font-semibold shadow-md"
+            >
+              Új link hozzáadása
+            </button>
           </div>
 
           <div className="rounded-xl overflow-hidden shadow-lg">

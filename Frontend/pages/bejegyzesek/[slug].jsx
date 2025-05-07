@@ -16,7 +16,7 @@ export default function Bejegyzes({ bejegyzes, felhasznalo }) {
   return (
     <div className="min-h-screen bg-gray-700 flex flex-col items-center">
       <title suppressHydrationWarning>{bejegyzes?.cim}</title>
-      <Navbar />
+      <Navbar felhasznalo={felhasznalo} />
       <div className="w-10/12">
         <h1 className="text-3xl text-white font-bold mt-10 ">
           {bejegyzes?.cim}
@@ -83,15 +83,32 @@ export default function Bejegyzes({ bejegyzes, felhasznalo }) {
 }
 
 export const getServerSideProps = async (ctx) => {
-  const res = await fetch(
-    "http://127.0.0.1:8080/api/bejegyzes/slug/" + ctx?.params?.slug
-  );
+  const felhasznalo = await fetch("http://127.0.0.1:8080/api/felhasznalo", {
+    headers: {
+      cookie: ctx.req.headers?.cookie,
+    },
+  });
+
+  const felhasznaloAdat = await felhasznalo.json();
+
+  const url =
+    `http://127.0.0.1:8080/api/bejegyzes/${
+      felhasznaloAdat?.jog >= 10 ? "admin" : "slug"
+    }/` + ctx?.params?.slug;
+
+  console.log(url);
+  const res = await fetch(url, {
+    headers: {
+      cookie: ctx.req.headers?.cookie,
+    },
+  });
 
   const data = await res.json();
 
   return {
     props: {
       bejegyzes: data,
+      felhasznalo: felhasznaloAdat,
     },
   };
 };
